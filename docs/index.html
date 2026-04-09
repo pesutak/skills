@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Code Skills</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-card: #12121a;
+      --bg-card-hover: #1a1a26;
+      --border: #1e1e2e;
+      --text: #e4e4ef;
+      --text-dim: #8888a0;
+      --accent: #7c6cf0;
+      --accent-glow: rgba(124, 108, 240, 0.15);
+      --accent-2: #50c8b8;
+      --accent-3: #f0a050;
+      --accent-4: #e06080;
+      --accent-5: #60a0f0;
+      --accent-6: #a0d060;
+      --code-bg: #0e0e16;
+      --radius: 12px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Subtle grid background */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(124, 108, 240, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(124, 108, 240, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 100px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(124, 108, 240, 0.25);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 500;
+      margin-bottom: 28px;
+    }
+
+    .hero-badge svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+
+    h1 .gradient {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-dim);
+      max-width: 600px;
+      margin: 0 auto 40px;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #6b5ce0;
+      box-shadow: 0 0 30px rgba(124, 108, 240, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent);
+    }
+
+    /* ── Section ── */
+    section {
+      padding: 80px 0;
+    }
+
+    .section-label {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    h2 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      max-width: 580px;
+      margin-bottom: 48px;
+    }
+
+    /* ── Skill cards ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .skill-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .skill-card:hover {
+      border-color: var(--card-accent, var(--accent));
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .skill-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--card-accent, var(--accent));
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .skill-card:hover::before {
+      opacity: 1;
+    }
+
+    .skill-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+      font-size: 1.3rem;
+      background: var(--accent-glow);
+      color: var(--card-accent, var(--accent));
+      border: 1px solid rgba(124, 108, 240, 0.15);
+    }
+
+    .skill-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .skill-card .command {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.85rem;
+      color: var(--card-accent, var(--accent));
+      margin-bottom: 12px;
+    }
+
+    .skill-card p {
+      color: var(--text-dim);
+      font-size: 0.92rem;
+    }
+
+    .skill-card .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+
+    /* Card color variants */
+    .skill-card[data-color="purple"] { --card-accent: var(--accent); }
+    .skill-card[data-color="teal"] { --card-accent: var(--accent-2); }
+    .skill-card[data-color="orange"] { --card-accent: var(--accent-3); }
+    .skill-card[data-color="pink"] { --card-accent: var(--accent-4); }
+    .skill-card[data-color="blue"] { --card-accent: var(--accent-5); }
+    .skill-card[data-color="green"] { --card-accent: var(--accent-6); }
+
+    /* ── How it works ── */
+    .how-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .how-step {
+      text-align: center;
+      padding: 32px 20px;
+    }
+
+    .how-step .num {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 16px;
+      background: var(--accent-glow);
+      border: 1px solid rgba(124, 108, 240, 0.2);
+      color: var(--accent);
+    }
+
+    .how-step h3 {
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+
+    .how-step p {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    /* ── Code block ── */
+    .code-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .code-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .code-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--border);
+    }
+
+    .code-dot:nth-child(1) { background: #ff5f57; }
+    .code-dot:nth-child(2) { background: #febc2e; }
+    .code-dot:nth-child(3) { background: #28c840; }
+
+    .code-title {
+      margin-left: 8px;
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    pre {
+      padding: 24px;
+      overflow-x: auto;
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.88rem;
+      line-height: 1.7;
+      color: var(--text-dim);
+    }
+
+    pre .comment { color: #555570; }
+    pre .cmd { color: var(--accent-2); }
+    pre .flag { color: var(--accent-3); }
+    pre .path { color: var(--accent); }
+    pre .string { color: var(--accent-6); }
+
+    /* ── Architecture ── */
+    .arch-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+    }
+
+    .arch-tree {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+    }
+
+    .arch-tree .dir { color: var(--accent-5); font-weight: 600; }
+    .arch-tree .file { color: var(--text-dim); }
+    .arch-tree .meta { color: var(--accent-2); }
+
+    /* ── Features strip ── */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 48px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.92rem;
+    }
+
+    .feature svg {
+      width: 20px;
+      height: 20px;
+      color: var(--accent-2);
+      flex-shrink: 0;
+    }
+
+    /* ── Frontmatter demo ── */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 32px;
+    }
+
+    @media (max-width: 700px) {
+      .demo-grid { grid-template-columns: 1fr; }
+    }
+
+    .demo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .demo-card-header {
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-dim);
+      background: rgba(255,255,255,0.02);
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+    }
+
+    .demo-card pre {
+      padding: 16px 20px;
+      font-size: 0.82rem;
+      line-height: 1.6;
+    }
+
+    pre .key { color: var(--accent-4); }
+    pre .val { color: var(--accent-6); }
+    pre .bracket { color: var(--accent-3); }
+    pre .sep { color: var(--text-dim); }
+
+    /* ── Install tabs ── */
+    .install-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      width: fit-content;
+    }
+
+    .install-tab {
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-dim);
+      border: none;
+      background: none;
+      font-family: inherit;
+    }
+
+    .install-tab.active {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .install-tab:hover:not(.active) {
+      color: var(--text);
+    }
+
+    .install-panel {
+      display: none;
+    }
+
+    .install-panel.active {
+      display: block;
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 48px 0;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.88rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      .hero { padding: 60px 0 48px; }
+      section { padding: 48px 0; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .how-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+        Claude Code Skills
+      </div>
+      <h1>Your knowledge,<br><span class="gradient">structured and searchable</span></h1>
+      <p>A set of Claude Code skills for managing notes, tasks, knowledge base, and quick hints. Plain markdown. Zero dependencies. Fully portable.</p>
+      <div class="hero-actions">
+        <a href="https://github.com/pesutak/skills" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          View on GitHub
+        </a>
+        <a href="#install" class="btn btn-secondary">Installation Guide</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Skills -->
+  <section>
+    <div class="container">
+      <span class="section-label">Skills</span>
+      <h2>Everything you need</h2>
+      <p class="section-desc">Six focused skills that cover the complete lifecycle of personal knowledge management.</p>
+
+      <div class="skills-grid">
+        <div class="skill-card" data-color="purple">
+          <div class="skill-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          </div>
+          <h3>Notes</h3>
+          <div class="command">/note</div>
+          <p>Create, list, edit, and archive personal notes. Ideas, thoughts, meeting notes — anything worth remembering.</p>
+          <div class="tag-list">
+            <span class="tag">add</span>
+            <span class="tag">list</span>
+            <span class="tag">view</span>
+            <span class="tag">edit</span>
+            <span class="tag">archive</span>
+          </div>
+        </div>
+
+        <div class="skill-card" data-color="pink">
+          <div class="skill-icon" style="background: rgba(224, 96, 128, 0.12); border-color: rgba(224, 96, 128, 0.2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <h3>Tasks</h3>
+          <div class="command">/task</div>
+          <p>Task management with priorities and statuses. Track what needs to be done, group by priority, mark as complete.</p>
+          <div class="tag-list">
+            <span class="tag">add</span>
+            <span class="tag">done</span>
+            <span class="tag">list</span>
+            <span class="tag">priorities</span>
+          </div>
+        </div>
+
+        <div class="skill-card" data-color="blue">
+          <div class="skill-icon" style="background: rgba(96, 160, 240, 0.12); border-color: rgba(96, 160, 240, 0.2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          </div>
+          <h3>Knowledge Base</h3>
+          <div class="command">/kb</div>
+          <p>Long-lived reference material organized by topic. Structured entries with cross-references for your personal wiki.</p>
+          <div class="tag-list">
+            <span class="tag">add</span>
+            <span class="tag">categories</span>
+            <span class="tag">cross-refs</span>
+          </div>
+        </div>
+
+        <div class="skill-card" data-color="orange">
+          <div class="skill-icon" style="background: rgba(240, 160, 80, 0.12); border-color: rgba(240, 160, 80, 0.2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Hints</h3>
+          <div class="command">/hint</div>
+          <p>Quick tips and tricks. Short, actionable snippets — commands, shortcuts, and useful patterns you always forget.</p>
+          <div class="tag-list">
+            <span class="tag">add</span>
+            <span class="tag">random tip</span>
+            <span class="tag">tags</span>
+          </div>
+        </div>
+
+        <div class="skill-card" data-color="teal">
+          <div class="skill-icon" style="background: rgba(80, 200, 184, 0.12); border-color: rgba(80, 200, 184, 0.2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+          <h3>Search</h3>
+          <div class="command">/notes-search</div>
+          <p>Full-text search across all entry types. Filter by tags, type, project, status, or date range.</p>
+          <div class="tag-list">
+            <span class="tag">full-text</span>
+            <span class="tag">tags</span>
+            <span class="tag">filters</span>
+          </div>
+        </div>
+
+        <div class="skill-card" data-color="green">
+          <div class="skill-icon" style="background: rgba(160, 208, 96, 0.12); border-color: rgba(160, 208, 96, 0.2);">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><line x1="9" y1="14" x2="15" y2="14"/></svg>
+          </div>
+          <h3>Initialize</h3>
+          <div class="command">/notes-init</div>
+          <p>Set up the <code>.notes/</code> directory structure in any project. One command to get started.</p>
+          <div class="tag-list">
+            <span class="tag">setup</span>
+            <span class="tag">one-time</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section>
+    <div class="container">
+      <span class="section-label">How it works</span>
+      <h2>Plain markdown, zero magic</h2>
+      <p class="section-desc">No databases, no special formats. Just markdown files with YAML frontmatter in a structured directory.</p>
+
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="num">1</div>
+          <h3>Initialize</h3>
+          <p>Run <code>/notes-init</code> to create the <code>.notes/</code> directory in your project</p>
+        </div>
+        <div class="how-step">
+          <div class="num">2</div>
+          <h3>Create</h3>
+          <p>Use <code>/note</code>, <code>/task</code>, <code>/kb</code>, or <code>/hint</code> to add entries</p>
+        </div>
+        <div class="how-step">
+          <div class="num">3</div>
+          <h3>Tag</h3>
+          <p>Entries are tagged for cross-cutting organization and fast discovery</p>
+        </div>
+        <div class="how-step">
+          <div class="num">4</div>
+          <h3>Search</h3>
+          <p>Use <code>/notes-search</code> to find anything by content, tags, type, or project</p>
+        </div>
+      </div>
+
+      <div class="features">
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Plain text
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          No dependencies
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+          Portable
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Git-friendly
+        </div>
+        <div class="feature">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Grep-native
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Architecture -->
+  <section>
+    <div class="container">
+      <span class="section-label">Architecture</span>
+      <h2>Simple by design</h2>
+      <p class="section-desc">A clean directory structure with frontmatter metadata. That's the entire system.</p>
+
+      <div class="demo-grid">
+        <div class="arch-box">
+          <div class="arch-tree">
+            <span class="dir">.notes/</span><br>
+            &nbsp;&nbsp;<span class="dir">notes/</span> <span class="meta">← ideas, thoughts, meeting notes</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">2026-04-09-api-design-ideas.md</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">2026-04-08-team-standup.md</span><br>
+            &nbsp;&nbsp;<span class="dir">tasks/</span> <span class="meta">← TODOs with priorities</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">2026-04-09-setup-monitoring.md</span><br>
+            &nbsp;&nbsp;<span class="dir">kb/</span> <span class="meta">← reference material</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">docker-multi-stage-builds.md</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">git-rebase-workflow.md</span><br>
+            &nbsp;&nbsp;<span class="dir">hints/</span> <span class="meta">← quick tips</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="file">docker-prune-all.md</span><br>
+            &nbsp;&nbsp;<span class="dir">projects/</span> <span class="meta">← per-project notes</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span class="dir">my-app/</span><br>
+          </div>
+        </div>
+
+        <div>
+          <div class="demo-card" style="margin-bottom: 20px;">
+            <div class="demo-card-header">kb/docker-multi-stage-builds.md</div>
+            <pre><span class="sep">---</span>
+<span class="key">title</span><span class="sep">:</span> <span class="val">"Docker multi-stage builds"</span>
+<span class="key">type</span><span class="sep">:</span> <span class="val">kb</span>
+<span class="key">tags</span><span class="sep">:</span> <span class="bracket">[</span><span class="val">docker</span><span class="sep">,</span> <span class="val">ci</span><span class="sep">,</span> <span class="val">optimization</span><span class="bracket">]</span>
+<span class="key">created</span><span class="sep">:</span> <span class="val">2026-04-09</span>
+<span class="key">updated</span><span class="sep">:</span> <span class="val">2026-04-09</span>
+<span class="key">status</span><span class="sep">:</span> <span class="val">active</span>
+<span class="key">related</span><span class="sep">:</span> <span class="bracket">[</span><span class="val">"dockerfile-best-practices"</span><span class="bracket">]</span>
+<span class="sep">---</span>
+
+<span style="color:var(--text)">## Problem</span>
+Large Docker images slow down CI...
+
+<span style="color:var(--text)">## Solution</span>
+Use multi-stage builds to separate
+build and runtime dependencies.</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Install -->
+  <section id="install">
+    <div class="container">
+      <span class="section-label">Get started</span>
+      <h2>Install in 30 seconds</h2>
+      <p class="section-desc">Copy the skill files to your project and start managing your knowledge.</p>
+
+      <div class="install-tabs">
+        <button class="install-tab active" onclick="switchTab(0)">Copy</button>
+        <button class="install-tab" onclick="switchTab(1)">Symlink</button>
+        <button class="install-tab" onclick="switchTab(2)">Git clone</button>
+      </div>
+
+      <div class="install-panel active" data-panel="0">
+        <div class="code-section">
+          <div class="code-header">
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-title">terminal</span>
+          </div>
+          <pre><span class="comment"># From your target project directory</span>
+<span class="cmd">mkdir</span> <span class="flag">-p</span> <span class="path">.claude/skills</span>
+
+<span class="comment"># Copy skills</span>
+<span class="cmd">cp</span> <span class="path">/path/to/skills/notes-management/skills/*.md</span> <span class="path">.claude/skills/</span>
+
+<span class="comment"># Copy conventions</span>
+<span class="cmd">cp</span> <span class="path">/path/to/skills/notes-management/CLAUDE.md</span> <span class="path">.claude/notes-system.md</span></pre>
+        </div>
+      </div>
+
+      <div class="install-panel" data-panel="1">
+        <div class="code-section">
+          <div class="code-header">
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-title">terminal</span>
+          </div>
+          <pre><span class="comment"># Symlink the skills directory</span>
+<span class="cmd">ln</span> <span class="flag">-s</span> <span class="path">~/skills/notes-management/skills/</span> <span class="path">.claude/skills/notes-management</span></pre>
+        </div>
+      </div>
+
+      <div class="install-panel" data-panel="2">
+        <div class="code-section">
+          <div class="code-header">
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-dot"></span>
+            <span class="code-title">terminal</span>
+          </div>
+          <pre><span class="comment"># Clone the skills repo</span>
+<span class="cmd">git</span> clone <span class="string">https://github.com/pesutak/skills.git</span> <span class="path">~/skills</span>
+
+<span class="comment"># Symlink into your project</span>
+<span class="cmd">ln</span> <span class="flag">-s</span> <span class="path">~/skills/notes-management/skills/</span> <span class="path">.claude/skills/notes-management</span></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>Built for <a href="https://github.com/anthropics/claude-code">Claude Code</a> &middot; <a href="https://github.com/pesutak/skills">Source on GitHub</a></p>
+    </div>
+  </footer>
+
+  <script>
+    function switchTab(index) {
+      document.querySelectorAll('.install-tab').forEach((t, i) => {
+        t.classList.toggle('active', i === index);
+      });
+      document.querySelectorAll('.install-panel').forEach((p, i) => {
+        p.classList.toggle('active', i === index);
+      });
+    }
+  </script>
+</body>
+</html>
