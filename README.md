@@ -10,6 +10,12 @@ Personal knowledge management system - notes, tasks, knowledge base, and hints. 
 
 **Skills**: `/notes-init`, `/note`, `/task`, `/kb`, `/hint`, `/notes-search`
 
+### [Vertical Codebase](./vertical-codebase/)
+
+Audit, plan, and transform codebases from horizontal (type-based) to vertical (domain-based) architecture. Based on [The Vertical Codebase](https://tkdodo.eu/blog/the-vertical-codebase) by TkDodo.
+
+**Skills**: `/vertical-audit`, `/vertical-plan`, `/vertical-refactor`, `/vertical-check`
+
 ## Installation
 
 Each skill pack has its own installation instructions in its README. The general approach:
